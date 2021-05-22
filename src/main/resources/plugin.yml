@@ -1,0 +1,12 @@
+name: ArashiPolice
+version: ${project.version}
+main: arashi.police.arashipolice.ArashiPolice
+api-version: 1.16
+
+commands:
+  police:
+    usage: /police [args]
+
+permissions:
+  police:
+    default: op
