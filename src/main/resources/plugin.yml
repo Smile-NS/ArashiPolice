@@ -1,6 +1,6 @@
 name: ArashiPolice
 version: ${project.version}
-main: arashi.police.arashipolice.ArashiPolice
+main: io.github.smile_ns.arashipolice.ArashiPolice
 api-version: 1.16
 
 commands:
