@@ -1,4 +1,5 @@
-# ArashiPolice-1.1.0
+# ArashiPolice-1.2.0  
+[ArashiPolice-1.2.0](https://github.com/Smile-NS/ArashiPolice/raw/master/target/ArashiPolice-1.2.0.jar)
 ## What is this?
 * 荒らしを拘束するためのSpigotプラグイン
 * JAILワールドを設定することで投獄することができます
