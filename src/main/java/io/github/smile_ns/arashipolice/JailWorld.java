@@ -2,30 +2,44 @@ package io.github.smile_ns.arashipolice;
 
 import io.github.smile_ns.arashipolice.penalty.Penalty;
 import io.github.smile_ns.arashipolice.penalty.Sinner;
-import io.github.smile_ns.simplejson.SimpleJson;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
 
-public class JailWorld extends ConfigManager {
+public class JailWorld extends ConfigManager implements Listener {
 
-    public static SimpleJson json;
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void PlayerJoinEvent(PlayerJoinEvent event) throws SQLException {
+        Player player = event.getPlayer();
+        if (isPrisoner(player)) goToJail(player);
+    }
 
-    static {
-        ConfigManager.saveConfig();
-        try {
-            json = new SimpleJson(
-                    new File("plugins" + File.separator + "ArashiPolice" + File.separator + "jail.json"));
-        } catch (IOException e) {
-            e.printStackTrace();
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void PlayerRespawnEvent(PlayerRespawnEvent event) throws SQLException {
+        Player player = event.getPlayer();
+        if (isPrisoner(player)) {
+            World world = getJailWorld();
+            if (world == null) return;
+            event.setRespawnLocation(world.getSpawnLocation());
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void PlayerChangedWorldEvent(PlayerChangedWorldEvent event) throws SQLException {
+        Player player = event.getPlayer();
+        if (isPrisoner(player) &&
+                player.getWorld() != getJailWorld()) goToJail(player);
     }
 
     public static void addPlayer(Player player) throws SQLException {

@@ -10,35 +10,88 @@ import io.github.smile_ns.arashipolice.penalty.Penalty;
 import io.github.smile_ns.arashipolice.penalty.Sinner;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.ChatColor.*;
 
-public class PoliceCmd {
+public class PoliceCmd implements CommandExecutor, TabCompleter {
 
-    private final Player sender;
-    private final String[] args;
+    private Player sender;
+    private String[] cmdArgs;
 
-    public PoliceCmd(Player sender, String[] args) {
-        this.sender = sender;
-        this.args = args;
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            System.out.println("このコマンドはプレイヤー用です");
+            return true;
+        }
+        this.sender = (Player) sender;
+        this.cmdArgs = args;
 
         try {
             select();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!command.getName().equals("police")) return null;
+        List<String> first = new ArrayList<>(Arrays.asList("forbid", "allow", "jail", "exempt-ip"));
+        List<String> penalty = new ArrayList<>(Arrays.asList("move", "chat", "attack", "break", "place", "interact", "all"));
+        List<String> jail = new ArrayList<>(Arrays.asList("release", "impose", "world"));
+        List<String> exempt = new ArrayList<>(Arrays.asList("register", "delete"));
+
+        if (args.length == 1 ) {
+            if (args[0].length() == 0) return first;
+            else return expansionArg(0, first, args);
+        }
+
+        if (args.length == 2 ) {
+
+            switch (args[0]) {
+                case "forbid":
+                case "allow":
+                    if (args[1].length() == 0) return penalty;
+                    else return expansionArg(1, penalty, args);
+                case "jail":
+                    if (args[1].length() == 0) return jail;
+                    else return expansionArg(1, jail, args);
+                case "exempt-ip":
+                    if (args[1].length() == 0) return exempt;
+                    else return expansionArg(1, exempt, args);
+            }
+        }
+        return null;
+    }
+
+    private List<String> expansionArg(int index, List<String> list, String[] args){
+        for (String str : list){
+            if (str.startsWith(args[index])) return Collections.singletonList(str);
+        }
+        return null;
     }
 
     private void select() throws Exception {
         if (!sender.hasPermission("police")) throw new NotHasPermissionException(sender);
-        if (args.length == 0) {
+        if (cmdArgs.length == 0) {
             new PlayerListPanel().open(sender);
             return;
         }
 
-        switch (args[0]) {
+        switch (cmdArgs[0]) {
             case "forbid":
                 forbid();
                 break;
@@ -57,14 +110,14 @@ public class PoliceCmd {
     }
 
     private void forbid() throws Exception {
-        if (args.length != 3) throw new IllegalArgsException(sender);
+        if (cmdArgs.length != 3) throw new IllegalArgsException(sender);
 
-        Player player = getServer().getPlayerExact(args[2]);
+        Player player = getServer().getPlayerExact(cmdArgs[2]);
         if (player == null) throw new PlayerNotFoundException(sender);
 
         Sinner sinner = new Sinner(player);
         String forbidden = RED + "既に禁止されています";
-        switch (args[1]) {
+        switch (cmdArgs[1]) {
             case "move":
                 if (sinner.forbidMove())
                     Penalty.log(sender, player.getName() + " が移動することを禁止しました");
@@ -106,14 +159,14 @@ public class PoliceCmd {
     }
 
     private void allow() throws Exception {
-        if (args.length != 3) throw new IllegalArgsException(sender);
+        if (cmdArgs.length != 3) throw new IllegalArgsException(sender);
 
-        Player player = getServer().getPlayerExact(args[2]);
+        Player player = getServer().getPlayerExact(cmdArgs[2]);
         if (player == null) throw new PlayerNotFoundException(sender);
 
         Sinner sinner = new Sinner(player);
         String notForbidden = RED + "禁止されていません";
-        switch (args[1]) {
+        switch (cmdArgs[1]) {
             case "move":
                 if (sinner.allowMove())
                     Penalty.log(sender, player.getName() + " が移動することを許可しました");
@@ -155,22 +208,22 @@ public class PoliceCmd {
     }
 
     private void jail() throws Exception {
-        if (args.length != 3) throw new IllegalArgsException(sender);
+        if (cmdArgs.length != 3) throw new IllegalArgsException(sender);
 
         Player player;
-        switch (args[1]) {
+        switch (cmdArgs[1]) {
             case "release":
-                player = getServer().getPlayerExact(args[2]);
+                player = getServer().getPlayerExact(cmdArgs[2]);
                 if (player == null) throw new PlayerNotFoundException(sender);
                 releaseJail(player);
                 break;
             case "impose":
-                player = getServer().getPlayerExact(args[2]);
+                player = getServer().getPlayerExact(cmdArgs[2]);
                 if (player == null) throw new PlayerNotFoundException(sender);
                 imposeJail(player);
                 break;
             case "world":
-                World world = getServer().getWorld(args[2]);
+                World world = getServer().getWorld(cmdArgs[2]);
                 if (world == null) {
                     sender.sendMessage(RED + "ワールドが見つかりませんでした");
                     return;
@@ -212,10 +265,10 @@ public class PoliceCmd {
     }
 
     private void exempt() throws Exception {
-        if (args.length != 3) throw new IllegalArgsException(sender);
+        if (cmdArgs.length != 3) throw new IllegalArgsException(sender);
 
-        String ip = args[2];
-        switch (args[1]) {
+        String ip = cmdArgs[2];
+        switch (cmdArgs[1]) {
             case "register":
                 if (Exempt.containsIp(ip)) {
                     sender.sendMessage(RED+ "既に登録されています");

@@ -16,7 +16,7 @@ import static org.bukkit.ChatColor.*;
 public class Penalty {
 
     public static final String URL = replaceSep(
-            "jdbc:sqlite:plugins\\ArashiPolice\\players.db");
+            "plugins\\ArashiPolice\\players.db");
     public static Connection connection;
     public static Statement statement;
 
@@ -24,7 +24,7 @@ public class Penalty {
         open();
     }
 
-    public static void tableInit() throws SQLException {
+    public static void tableInit() throws Exception {
         openDirect();
         String[] commands = {
                 "CREATE TABLE IF NOT EXISTS move(uuid TEXT, ip TEXT)",
@@ -44,6 +44,7 @@ public class Penalty {
             SimpleJson json = new SimpleJson(players);
             json.setSeparator("/");
 
+            players.delete();
             for (String node : json.getKeySet("arashi")) {
                 for (Object val : json.getList("arashi/" + node)) {
                     Sinner sinner = val.toString().contains(".") ?
@@ -51,7 +52,6 @@ public class Penalty {
                     sinner.register(node);
                 }
             }
-            players.delete();
         }
 
         File jail = new File("plugins\\ArashiPolice\\jail.json");
@@ -59,12 +59,12 @@ public class Penalty {
             SimpleJson json = new SimpleJson(jail);
             json.setSeparator("/");
 
+            jail.delete();
             for (Object val : json.getList("players")) {
                 Sinner sinner = val.toString().contains(".") ?
                         new Sinner(null, val.toString()) : new Sinner(val.toString(), null);
                 sinner.register("jail");
             }
-            jail.delete();
         }
 
         if (players.exists() || jail.exists()) save();
@@ -74,7 +74,7 @@ public class Penalty {
         try {
             if (!connection.isClosed()) return;
             openDirect();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -85,8 +85,10 @@ public class Penalty {
                 DARK_PURPLE + "ArashiPolice" + GRAY + ">> " + DARK_PURPLE + msg);
     }
 
-    public static void openDirect() throws SQLException {
-        connection = DriverManager.getConnection(URL);
+    public static void openDirect() throws Exception {
+        File db = new File(replaceSep(URL));
+        if (!db.exists()) db.createNewFile();
+        connection = DriverManager.getConnection("jdbc:sqlite:" + URL);
         statement = connection.createStatement();
         statement.setQueryTimeout(30);
     }

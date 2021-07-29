@@ -1,15 +1,14 @@
 io\github\smile_ns\arashipolice\penalty\Penalty.class
-io\github\smile_ns\arashipolice\ArashiToggleAction.class
 io\github\smile_ns\arashipolice\exceptions\NotHasPermissionException.class
 io\github\smile_ns\arashipolice\exceptions\IllegalArgsException.class
 io\github\smile_ns\arashipolice\gui\Panel.class
+io\github\smile_ns\arashipolice\ArashiActionListener.class
 io\github\smile_ns\arashipolice\sqlite\SQLiteValues.class
 io\github\smile_ns\arashipolice\gui\PenaltyPanel.class
 io\github\smile_ns\arashipolice\exceptions\PlayerNotFoundException.class
 io\github\smile_ns\arashipolice\ConfigManager.class
 io\github\smile_ns\arashipolice\gui\JailPanel.class
 io\github\smile_ns\arashipolice\penalty\Sinner.class
-io\github\smile_ns\arashipolice\commands\Complement.class
 io\github\smile_ns\arashipolice\JailWorld.class
 io\github\smile_ns\arashipolice\Exempt.class
 io\github\smile_ns\arashipolice\commands\PoliceCmd.class

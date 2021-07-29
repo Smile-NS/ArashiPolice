@@ -2,8 +2,10 @@ package io.github.smile_ns.arashipolice.gui;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -57,7 +59,7 @@ public class PlayerListPanel extends Panel {
         player.openInventory(playerListInv);
     }
 
-    @Override
+    @EventHandler
     public void onClick(InventoryClickEvent event) throws SQLException {
         Player player = (Player) event.getWhoClicked();
         int slot = event.getSlot();
@@ -79,5 +81,10 @@ public class PlayerListPanel extends Panel {
             new PenaltyPanel().open(player, owner);
         else if (action == InventoryAction.PICKUP_HALF)
             new JailPanel().open(player, owner);
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent event) {
+
     }
 }

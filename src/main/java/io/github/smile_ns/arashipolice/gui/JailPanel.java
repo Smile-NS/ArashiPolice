@@ -3,6 +3,7 @@ package io.github.smile_ns.arashipolice.gui;
 import io.github.smile_ns.arashipolice.JailWorld;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -64,7 +65,7 @@ public class JailPanel extends Panel {
     public void open(Player player) {
     }
 
-    @Override
+    @EventHandler
     public void onClick(InventoryClickEvent event) throws SQLException {
         Player player = (Player) event.getWhoClicked();
         int slot = event.getSlot();
@@ -94,7 +95,8 @@ public class JailPanel extends Panel {
         open(player, target);
     }
 
-    public static void onClose(InventoryCloseEvent event) {
+    @EventHandler
+    public void onClose(InventoryCloseEvent event) {
         Inventory inv = event.getInventory();
         invMap.remove(inv);
     }

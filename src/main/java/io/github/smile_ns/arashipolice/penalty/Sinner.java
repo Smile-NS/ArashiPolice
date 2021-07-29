@@ -11,13 +11,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static io.github.smile_ns.arashipolice.penalty.Penalty.*;
+import static io.github.smile_ns.arashipolice.penalty.Penalty.statement;
 
 public class Sinner {
 
     private static final Map<Player, Sinner> sinnerMap = new HashMap<>();
     private static final String[] penaltyTypes = {
-            "move", "chat", "attack", "break", "place", "interact"
+            "move", "chat", "attack", "break", "place", "interact", "jail"
     };
 
     Set<String> penalties;
@@ -28,7 +28,7 @@ public class Sinner {
 
     String ip;
 
-    boolean isExemptIp = false;
+    boolean isExemptIp;
 
     public Sinner(Player player) throws SQLException {
         this.player = player;

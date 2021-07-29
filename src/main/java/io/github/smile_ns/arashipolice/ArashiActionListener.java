@@ -3,6 +3,9 @@ package io.github.smile_ns.arashipolice;
 import io.github.smile_ns.arashipolice.penalty.Sinner;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -14,11 +17,12 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import java.sql.SQLException;
 
 import static io.github.smile_ns.arashipolice.ConfigManager.DO_NOT_MIND;
-import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.*;
 
-public class ArashiToggleAction {
+public class ArashiActionListener implements Listener {
 
-    public static void move(PlayerMoveEvent event) throws SQLException {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void move(PlayerMoveEvent event) throws SQLException {
         Player player = event.getPlayer();
         Sinner sinner = new Sinner(player);
 
@@ -29,7 +33,8 @@ public class ArashiToggleAction {
         }
     }
 
-    public static void move(PlayerToggleSneakEvent event) throws SQLException {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void move(PlayerToggleSneakEvent event) throws SQLException {
         Player player = event.getPlayer();
         Sinner sinner = new Sinner(player);
 
@@ -41,7 +46,8 @@ public class ArashiToggleAction {
         }
     }
 
-    public static void chat(AsyncPlayerChatEvent event) throws SQLException {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void chat(AsyncPlayerChatEvent event) throws SQLException {
         Player player = event.getPlayer();
         Sinner sinner = new Sinner(player);
 
@@ -52,7 +58,8 @@ public class ArashiToggleAction {
         }
     }
 
-    public static void attack(EntityDamageByEntityEvent event) throws SQLException {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void attack(EntityDamageByEntityEvent event) throws SQLException {
         Entity entity = event.getDamager();
         if (!(entity instanceof Player)) return;
         Player player = (Player) entity;
@@ -65,7 +72,8 @@ public class ArashiToggleAction {
         }
     }
 
-    public static void blockBreak(BlockBreakEvent event) throws SQLException {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockBreak(BlockBreakEvent event) throws SQLException {
         Player player = event.getPlayer();
         Sinner sinner = new Sinner(player);
 
@@ -76,7 +84,8 @@ public class ArashiToggleAction {
         }
     }
 
-    public static void blockPlace(BlockPlaceEvent event) throws SQLException {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockPlace(BlockPlaceEvent event) throws SQLException {
         Player player = event.getPlayer();
         Sinner sinner = new Sinner(player);
 
@@ -87,7 +96,8 @@ public class ArashiToggleAction {
         }
     }
 
-    public static void interact(PlayerInteractEvent event) throws SQLException {
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void interact(PlayerInteractEvent event) throws SQLException {
         Player player = event.getPlayer();
         Sinner sinner = new Sinner(player);
 
